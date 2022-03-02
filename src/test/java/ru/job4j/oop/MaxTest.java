@@ -9,7 +9,7 @@ public class MaxTest {
     @Test
     public void when24then4() {
         Max num = new Max();
-        int in = num.max(2,4);
+        int in = num.max(2, 4);
         int expected = 4;
         assertEquals(expected, in);
     }
