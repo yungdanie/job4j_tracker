@@ -7,11 +7,11 @@ public class Item {
     Item() {
     }
 
-    Item(String name) {
+    public Item(String name) {
         this.name = name;
     }
 
-    Item(String name, int id) {
+    public Item(String name, int id) {
         this.name = name;
         this.id = id;
     }
