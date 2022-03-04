@@ -9,5 +9,6 @@ public class College {
         student.setFaculty("Energeticheskiy");
         student.setSpec("Svyaz");
         System.out.println("Имя студента " + student.getName() + ", фамилия студента " + student.getSurName() + ", факультет студента " + student.getFaculty());
+
     }
 }
