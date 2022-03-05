@@ -8,7 +8,9 @@ public class College {
         student.setSurName("Agentov");
         student.setFaculty("Energeticheskiy");
         student.setSpec("Svyaz");
-        System.out.println("Имя студента " + student.getName() + ", фамилия студента " + student.getSurName() + ", факультет студента " + student.getFaculty());
+        System.out.println("Имя студента " + student.getName()
+                + ", фамилия студента " + student.getSurName()
+                + ", факультет студента " + student.getFaculty());
 
     }
 }
