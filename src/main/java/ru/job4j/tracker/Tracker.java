@@ -3,6 +3,7 @@ package ru.job4j.tracker;
 import java.util.Arrays;
 
 public class Tracker {
+
     private final Item[] items = new Item[100];
     private int ids = 1;
     private int size = 0;
@@ -50,6 +51,19 @@ public class Tracker {
         if (index != -1) {
             items[index] = item;
             item.setId(id);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean delete(int id) {
+        int index = indexOf(id);
+        if (index != -1) {
+            items[index] = null;
+            System.arraycopy(items, index + 1, items, size - index - 1, index);
+            items[size - 1] = null;
+            size--;
             return true;
         } else {
             return false;
