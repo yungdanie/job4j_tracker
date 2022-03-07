@@ -9,6 +9,6 @@ public class Train implements Vehicle {
 
     @Override
     public void arrival() {
-        System.out.println(getClass() + " прибыл на ЖД вокзал");
+        System.out.println(getClass() + "  прибыл на ЖД вокзал");
     }
 }
