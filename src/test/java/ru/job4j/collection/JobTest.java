@@ -27,7 +27,7 @@ public class JobTest {
     }
 
     @Test
-    public void JobAscByPriority() {
+    public void jobAscByPriority() {
         Comparator<Job> comp = new JobAscByPriority();
         int res = comp.compare(new Job("A", 2),
                 new Job("B", 1));
@@ -35,7 +35,7 @@ public class JobTest {
     }
 
     @Test
-    public void JobDescByPriority() {
+    public void jobDescByPriority() {
         Comparator<Job> comp = new JobDescByPriority();
         int res = comp.compare(new Job("A", 2),
                 new Job("B", 1));
