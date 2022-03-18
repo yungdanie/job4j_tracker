@@ -48,15 +48,16 @@ public class Tracker {
             items.set(index, item);
             item.setId(id);
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     public boolean delete(int id) {
         int index = indexOf(id);
         if (index != -1) {
-            return items.remove(items.get(index));
+            Item item = new Item();
+            item = items.get(index);
+            return items.remove(item);
         }
         return false;
     }
