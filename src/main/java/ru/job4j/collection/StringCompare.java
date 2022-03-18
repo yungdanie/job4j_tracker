@@ -19,10 +19,8 @@ public class StringCompare implements Comparator<String> {
             return res;
         }
         b = cond ? leftLength : rightLength;
-        String comp = cond ? left : right;
         for (; i < b; i++) {
-            res += comp.equals(left) ? 1
-                    : -1;
+            res += cond ? 1 : -1;
         }
         return res;
     }
