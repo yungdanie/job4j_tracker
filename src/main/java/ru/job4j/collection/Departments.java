@@ -11,7 +11,7 @@ public class Departments {
             String start = "";
             for (String el : value.split("/")) {
                 tmp.add(start + el);
-                start = el + "/";
+                start = start + el + "/";
             }
 
         }
