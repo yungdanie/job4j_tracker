@@ -20,7 +20,7 @@ public class FunctionsTest {
 
     @Test
     public void whenSquareFunctionThenLinearResults() {
-        List<Double> result = Functions.diapason(0, 4, x -> x*x);
+        List<Double> result = Functions.diapason(0, 4, x -> x * x);
         List<Double> expected = Arrays.asList(0D, 1D, 4D, 9D);
         assertThat(result, is(expected));
     }
