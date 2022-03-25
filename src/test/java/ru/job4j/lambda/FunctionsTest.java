@@ -27,8 +27,8 @@ public class FunctionsTest {
 
     @Test
     public void whenExpFunctionThenLinearResults() {
-        List<Double> result = Functions.diapason(2, 3, x -> Math.exp(1) * Math.exp(1) + x);
-        List<Double> expected = List.of(9.38D);
+        List<Double> result = Functions.diapason(2, 3, x -> Math.pow(2, x) + x);
+        List<Double> expected = List.of(6D);
         double delta = 0.01;
         assertEquals(result.get(0), expected.get(0), delta);
     }
