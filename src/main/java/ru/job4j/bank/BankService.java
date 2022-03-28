@@ -14,7 +14,7 @@ import java.util.Map;
 public class BankService {
     /**
      * Для хранения пользователей и их счётов используется коллекция типа HashMap.
-     * Ключём является тип User {@link User}.
+     * Ключом является тип User {@link User}.
      * Значением является коллекция типа List, которая включает в себя счёты типа {@link Account}.
      */
     private final Map<User, List<Account>> users = new HashMap<>();
@@ -50,12 +50,11 @@ public class BankService {
      * @return возвращает тип {@link User}, иначе null.
      */
     public User findByPassport(String passport) {
-        for (User user : users.keySet()) {
-            if (user.getPassport().equals(passport)) {
-                return user;
-            }
-        }
-        return null;
+        return users.keySet()
+                .stream()
+                .filter(a -> a.getPassport().equals(passport))
+                .findFirst()
+                .orElse(null);
     }
 
     /**
@@ -67,12 +66,12 @@ public class BankService {
     public Account findByRequisite(String passport, String requisite) {
         User user = findByPassport(passport);
         if (user != null) {
-            List<Account> accounts = users.get(user);
-            for (Account acc : accounts) {
-                if (acc.getRequisite().equals(requisite)) {
-                    return acc;
-                }
-            }
+            return users.get(user)
+                    .stream()
+                    .filter(a -> a.getRequisite()
+                            .equals(requisite))
+                    .findFirst()
+                    .orElse(null);
         }
         return null;
     }
