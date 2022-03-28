@@ -9,7 +9,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public class DepartmentsTest {
-
     @Test
     public void whenMissed() {
         List<String> input = Arrays.asList("k1/sk1", "k2/sk1");
