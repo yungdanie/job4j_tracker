@@ -10,7 +10,6 @@ import java.util.Map;
 import static org.junit.Assert.*;
 
 public class ListToMapTest {
-
     @Test
     public void whenInputListNotHaveDuplicate() {
         List<Student> list = Arrays.asList(
