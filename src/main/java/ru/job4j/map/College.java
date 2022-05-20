@@ -1,8 +1,6 @@
 package ru.job4j.map;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class College {
     private final Map<Student, Set<Subject>> students;
@@ -33,5 +31,22 @@ public class College {
             }
         }
         return rsl;
+    }
+
+    public static String collect(String s) {
+        String[] array = s.split(" ");
+        for (var i = 0; i < array.length; i++) {
+            array[i] = String.valueOf(array[i].charAt(0));
+        }
+        String res = "";
+        for (var a : array) {
+            res = res + a;
+        }
+        return res;
+    }
+
+    public static void main(String[] args) {
+        String s = "North Atlantic Treaty Organization";
+        String rsl = collect(s);
     }
 }
