@@ -1,5 +1,7 @@
 package ru.job4j.tracker;
 
+import java.sql.SQLException;
+
 public class FindByIdAction implements UserAction {
     private final Output out;
 
@@ -13,10 +15,15 @@ public class FindByIdAction implements UserAction {
     }
 
     @Override
-    public boolean execute(Input input, Tracker tracker) {
+    public boolean execute(Input input, Store  tracker) {
         out.println("=== Find item by id ===");
         int id = input.askInt("Enter id: ");
-        Item item = tracker.findById(id);
+        Item item = null;
+        try {
+            item = tracker.findById(id);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         if (item != null) {
             out.println(item);
         } else {

@@ -1,5 +1,7 @@
 package ru.job4j.tracker;
 
+import java.sql.SQLException;
+
 public class EditAction implements UserAction {
     private final Output out;
 
@@ -13,11 +15,11 @@ public class EditAction implements UserAction {
     }
 
     @Override
-    public boolean execute(Input input, Tracker tracker) {
+    public boolean execute(Input input, Store  tracker) throws SQLException {
         out.println("=== Edit item ===");
         int id = input.askInt("Enter id: ");
         String name = input.askStr("Enter name: ");
-        Item item = new Item(name);
+        Item item = new Item(name, id);
         if (tracker.replace(id, item)) {
             out.println("Заявка изменена успешно.");
         } else {
