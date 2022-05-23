@@ -10,7 +10,12 @@ public class SqlTracker implements Store, AutoCloseable {
 
     private Connection cn;
 
-    private Statement statement;
+    public SqlTracker() {
+    }
+
+    public SqlTracker(Connection cn) {
+        this.cn = cn;
+    }
 
     public void init() throws SQLException {
         try (InputStream in = SqlTracker.class.getClassLoader().getResourceAsStream("app.properties")) {
@@ -25,26 +30,25 @@ public class SqlTracker implements Store, AutoCloseable {
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
-        statement = createStatement();
         createTable();
     }
 
-    private Statement createStatement() throws SQLException {
-        return cn.createStatement();
-    }
-
     private void createTable() throws SQLException {
-        String sql = "create table if not exists items(id serial primary key, name text, create_time timestamp)";
-        statement.executeUpdate(sql);
+        try (PreparedStatement preparedStatement = cn.prepareStatement("create table if not exists items(id serial primary key, name text, create_time timestamp)")) {
+            preparedStatement.execute();
+        }
     }
 
     @Override
     public Item add(Item item) throws SQLException {
-        String sql = String.format("insert into items(name, create_time) values ('%s', '%s')", item.getName(), Timestamp.valueOf(item.getDataTime()));
-        statement.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
-        try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-            if (generatedKeys.next()) {
-                item.setId(generatedKeys.getInt(1));
+        try (PreparedStatement preparedStatement = cn.prepareStatement("insert into items(name, create_time) values (?, ?)", Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setString(1, item.getName());
+            preparedStatement.setTimestamp(2, Timestamp.valueOf(item.getDataTime()));
+            preparedStatement.execute();
+            try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    item.setId(generatedKeys.getInt(1));
+                }
             }
         }
         return item;
@@ -52,27 +56,30 @@ public class SqlTracker implements Store, AutoCloseable {
 
     @Override
     public boolean replace(int id, Item item) throws SQLException {
-        String sql = String.format("update items set name = '%s', create_time = '%s' where items.id = %s", item.getName(),
-                Timestamp.valueOf(item.getDataTime()),
-                id);
-        return statement.executeUpdate(sql) > 0;
+        try (PreparedStatement preparedStatement = cn.prepareStatement("update items set name = ?, create_time = ? where items.id = ?")) {
+            preparedStatement.setString(1, item.getName());
+            preparedStatement.setTimestamp(2, Timestamp.valueOf(item.getDataTime()));
+            preparedStatement.setInt(3, id);
+            return preparedStatement.executeUpdate() > 0;
+        }
     }
 
     @Override
     public boolean delete(int id) throws SQLException {
-        String sql = String.format("delete from items where id = %s", id);
-        return statement.executeUpdate(sql) > 0;
+        try (PreparedStatement preparedStatement = cn.prepareStatement("delete from items where items.id = ?")) {
+            preparedStatement.setInt(1, id);
+            return preparedStatement.executeUpdate() > 0;
+        }
     }
 
     @Override
     public List<Item> findAll() throws SQLException {
         List<Item> list = new ArrayList<>();
-        String sql = "select * from items";
-        try (ResultSet set = statement.executeQuery(sql)) {
-            while (set.next()) {
-                list.add(new Item(set.getString("name"),
-                        Integer.parseInt(set.getString("id")),
-                        set.getTimestamp("create_time").toLocalDateTime()));
+        try (PreparedStatement preparedStatement = cn.prepareStatement("select * from items")) {
+            try (ResultSet set = preparedStatement.executeQuery()) {
+                while (set.next()) {
+                    list.add(getItem(set));
+                }
             }
         }
         return list;
@@ -81,12 +88,12 @@ public class SqlTracker implements Store, AutoCloseable {
     @Override
     public List<Item> findByName(String key) throws SQLException {
         List<Item> list = new ArrayList<>();
-        String sql = String.format("select * from items where items.name = '%s'", key);
-        try (ResultSet set = statement.executeQuery(sql)) {
-            while (set.next()) {
-                list.add(new Item(set.getString("name"),
-                        Integer.parseInt(set.getString("id")),
-                        set.getTimestamp("create_time").toLocalDateTime()));
+        try (PreparedStatement preparedStatement = cn.prepareStatement("select * from items where items.name = ?")) {
+            preparedStatement.setString(1, key);
+            try (ResultSet set = preparedStatement.executeQuery()) {
+                while (set.next()) {
+                    list.add(getItem(set));
+                }
             }
         }
         return list;
@@ -94,17 +101,23 @@ public class SqlTracker implements Store, AutoCloseable {
 
     @Override
     public Item findById(int id) throws SQLException {
-        Item item = new Item();
-        String sql = String.format("select * from items where items.id = %s", id);
-        try (ResultSet set = statement.executeQuery(sql)) {
-            if (set.next()) {
-                item.setId(Integer.parseInt(set.getString("id")));
-                item.setName(set.getString("name"));
-                item.setDataTime(set.getTimestamp("create_time"));
-            } else {
-                item = null;
+        Item item = null;
+        try (PreparedStatement preparedStatement = cn.prepareStatement("select * from items where items.id = ?")) {
+            preparedStatement.setInt(1, id);
+            try (ResultSet set = preparedStatement.executeQuery()) {
+                if (set.next()) {
+                    item = getItem(set);
+                }
             }
         }
+        return item;
+    }
+
+    private Item getItem(ResultSet set) throws SQLException {
+        Item item = new Item();
+        item.setId(Integer.parseInt(set.getString("id")));
+        item.setName(set.getString("name"));
+        item.setDataTime(set.getTimestamp("create_time"));
         return item;
     }
 
@@ -112,9 +125,6 @@ public class SqlTracker implements Store, AutoCloseable {
     public void close() throws Exception {
         if (cn != null) {
             cn.close();
-        }
-        if (statement != null) {
-            statement.close();
         }
     }
 }
