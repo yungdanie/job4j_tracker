@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 public class SqlTrackerTest {
@@ -49,7 +50,7 @@ public class SqlTrackerTest {
     }
 
     @Test
-    public void whenSaveItemAndFindByGeneratedIdThenMustBeTheSame() throws SQLException {
+    public void whenSaveItemAndFindByGeneratedIdThenMustBeTheSame() {
         SqlTracker tracker = new SqlTracker(connection);
         Item item = new Item("item");
         tracker.add(item);
@@ -57,7 +58,7 @@ public class SqlTrackerTest {
     }
 
     @Test
-    public void whenSaveItemAndFindByName() throws SQLException {
+    public void whenSaveItemAndFindByName() {
         SqlTracker tracker = new SqlTracker(connection);
         Item item = new Item("item");
         tracker.add(item);
@@ -65,7 +66,7 @@ public class SqlTrackerTest {
     }
 
     @Test
-    public void whenSaveItemAndReplace() throws SQLException {
+    public void whenSaveItemAndReplace() {
         SqlTracker tracker = new SqlTracker(connection);
         Item item = new Item("item");
         Item newItem = new Item("newItem");
@@ -75,7 +76,7 @@ public class SqlTrackerTest {
     }
 
     @Test
-    public void whenSaveItemsAndFindAll() throws SQLException {
+    public void whenSaveItemsAndFindAll() {
         SqlTracker tracker = new SqlTracker(connection);
         Item item = new Item("item");
         Item item1 = new Item("item1");
@@ -83,5 +84,14 @@ public class SqlTrackerTest {
         tracker.add(item1);
         assertThat(tracker.findAll().get(0), is(item));
         assertThat(tracker.findAll().get(1), is(item1));
+    }
+
+    @Test
+    public void whenSaveItemAndDelete() {
+        SqlTracker tracker = new SqlTracker(connection);
+        Item item = new Item("item");
+        tracker.add(item);
+        tracker.delete(item.getId());
+        assertNull(tracker.findById(item.getId()));
     }
 }
