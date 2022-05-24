@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Properties;
 
 import static org.hamcrest.Matchers.is;
@@ -69,10 +70,10 @@ public class SqlTrackerTest {
     public void whenSaveItemAndReplace() {
         SqlTracker tracker = new SqlTracker(connection);
         Item item = new Item("item");
-        Item newItem = new Item("newItem");
+        Item item1 = new Item("item1");
         tracker.add(item);
-        tracker.replace(item.getId(), newItem);
-        assertThat(tracker.findById(item.getId()).getName(), is(newItem.getName()));
+        tracker.replace(item.getId(), item1);
+        assertThat(tracker.findById(item.getId()).getName(), is(item1.getName()));
     }
 
     @Test
@@ -82,8 +83,7 @@ public class SqlTrackerTest {
         Item item1 = new Item("item1");
         tracker.add(item);
         tracker.add(item1);
-        assertThat(tracker.findAll().get(0), is(item));
-        assertThat(tracker.findAll().get(1), is(item1));
+        assertThat(tracker.findAll(), is(List.of(item, item1)));
     }
 
     @Test
