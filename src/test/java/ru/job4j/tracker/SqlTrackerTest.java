@@ -53,44 +53,38 @@ public class SqlTrackerTest {
     @Test
     public void whenSaveItemAndFindByGeneratedIdThenMustBeTheSame() {
         SqlTracker tracker = new SqlTracker(connection);
-        Item item = new Item("item");
-        tracker.add(item);
+        Item item = tracker.add(new Item("item"));
         assertThat(tracker.findById(item.getId()), is(item));
     }
 
     @Test
     public void whenSaveItemAndFindByName() {
         SqlTracker tracker = new SqlTracker(connection);
-        Item item = new Item("item");
-        tracker.add(item);
+        Item item = tracker.add(new Item("item"));
         assertThat(tracker.findByName("item").get(0), is(item));
     }
 
     @Test
     public void whenSaveItemAndReplace() {
         SqlTracker tracker = new SqlTracker(connection);
-        Item item = new Item("item");
-        Item item1 = new Item("item1");
-        tracker.add(item);
-        tracker.replace(item.getId(), item1);
-        assertThat(tracker.findById(item.getId()).getName(), is(item1.getName()));
+        Item item = tracker.add(new Item("item"));
+        tracker.replace(item.getId(), new Item("item1"));
+        assertThat(tracker.findById(item.getId()).getName(), is("item1"));
     }
 
     @Test
     public void whenSaveItemsAndFindAll() {
         SqlTracker tracker = new SqlTracker(connection);
-        Item item = new Item("item");
-        Item item1 = new Item("item1");
-        tracker.add(item);
-        tracker.add(item1);
-        assertThat(tracker.findAll(), is(List.of(item, item1)));
+        Item item = tracker.add(new Item("item"));
+        Item item1 = tracker.add(new Item("item1"));
+        Item item2 = tracker.add(new Item("item2"));
+        assertThat(tracker.findAll(), is(List.of(item, item1, item2)));
     }
 
     @Test
     public void whenSaveItemAndDelete() {
         SqlTracker tracker = new SqlTracker(connection);
-        Item item = new Item("item");
-        tracker.add(item);
+        Item item = tracker.add(new Item("item"));
         tracker.delete(item.getId());
         assertNull(tracker.findById(item.getId()));
     }
