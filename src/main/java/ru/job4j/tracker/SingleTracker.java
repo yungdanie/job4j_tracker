@@ -1,6 +1,5 @@
 package ru.job4j.tracker;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class SingleTracker {
@@ -17,27 +16,27 @@ public class SingleTracker {
         return instance;
     }
 
-    public Item add(Item item) throws SQLException {
+    public Item add(Item item) {
         return instance.add(item);
     }
 
-    public Item findById(int id) throws SQLException {
+    public Item findById(int id) {
         return instance.findById(id);
     }
 
-    public List<Item> findAll() throws SQLException {
+    public List<Item> findAll() {
         return instance.findAll();
     }
 
-    public List<Item> findByName(String name) throws SQLException {
+    public List<Item> findByName(String name) {
         return instance.findByName(name);
     }
 
-    public boolean replace(int id, Item item) throws SQLException {
+    public boolean replace(int id, Item item) {
         return instance.replace(id, item);
     }
 
-    public boolean delete(int id) throws SQLException {
+    public boolean delete(int id) {
         return instance.delete(id);
     }
 }

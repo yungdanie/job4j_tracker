@@ -17,8 +17,9 @@ public class SqlTracker implements Store, AutoCloseable {
         this.cn = cn;
     }
 
-    public void init() throws SQLException {
-        try (InputStream in = SqlTracker.class.getClassLoader().getResourceAsStream("app.properties")) {
+    public void init() {
+        try (InputStream in =
+                     SqlTracker.class.getClassLoader().getResourceAsStream("app.properties")) {
             Properties config = new Properties();
             config.load(in);
             Class.forName(config.getProperty("driver-class-name"));
@@ -33,15 +34,21 @@ public class SqlTracker implements Store, AutoCloseable {
         createTable();
     }
 
-    private void createTable() throws SQLException {
-        try (PreparedStatement preparedStatement = cn.prepareStatement("create table if not exists items(id serial primary key, name text, create_time timestamp)")) {
+    private void createTable() {
+        try (PreparedStatement preparedStatement =
+                     cn.prepareStatement("create table if not exists items"
+                .concat("(id serial primary key, name text, create_time timestamp)"))) {
             preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
     @Override
-    public Item add(Item item) throws SQLException {
-        try (PreparedStatement preparedStatement = cn.prepareStatement("insert into items(name, create_time) values (?, ?)", Statement.RETURN_GENERATED_KEYS)) {
+    public Item add(Item item) {
+        try (PreparedStatement preparedStatement =
+                     cn.prepareStatement("insert into items(name, create_time) values (?, ?)",
+                Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, item.getName());
             preparedStatement.setTimestamp(2, Timestamp.valueOf(item.getDataTime()));
             preparedStatement.execute();
@@ -50,65 +57,86 @@ public class SqlTracker implements Store, AutoCloseable {
                     item.setId(generatedKeys.getInt(1));
                 }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return item;
     }
 
     @Override
-    public boolean replace(int id, Item item) throws SQLException {
-        try (PreparedStatement preparedStatement = cn.prepareStatement("update items set name = ?, create_time = ? where items.id = ?")) {
+    public boolean replace(int id, Item item) {
+        boolean rsl = false;
+        try (PreparedStatement preparedStatement =
+                     cn.prepareStatement("update items set name = ?, create_time = ? where items.id = ?")) {
             preparedStatement.setString(1, item.getName());
             preparedStatement.setTimestamp(2, Timestamp.valueOf(item.getDataTime()));
             preparedStatement.setInt(3, id);
-            return preparedStatement.executeUpdate() > 0;
+            rsl = preparedStatement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        return rsl;
     }
 
     @Override
-    public boolean delete(int id) throws SQLException {
-        try (PreparedStatement preparedStatement = cn.prepareStatement("delete from items where items.id = ?")) {
+    public boolean delete(int id) {
+        boolean rsl = false;
+        try (PreparedStatement preparedStatement
+                     = cn.prepareStatement("delete from items where items.id = ?")) {
             preparedStatement.setInt(1, id);
-            return preparedStatement.executeUpdate() > 0;
+            rsl = preparedStatement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        return rsl;
     }
 
     @Override
-    public List<Item> findAll() throws SQLException {
+    public List<Item> findAll() {
         List<Item> list = new ArrayList<>();
-        try (PreparedStatement preparedStatement = cn.prepareStatement("select * from items")) {
+        try (PreparedStatement preparedStatement =
+                     cn.prepareStatement("select * from items")) {
             try (ResultSet set = preparedStatement.executeQuery()) {
                 while (set.next()) {
                     list.add(getItem(set));
                 }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return list;
     }
 
     @Override
-    public List<Item> findByName(String key) throws SQLException {
+    public List<Item> findByName(String key) {
         List<Item> list = new ArrayList<>();
-        try (PreparedStatement preparedStatement = cn.prepareStatement("select * from items where items.name = ?")) {
+        try (PreparedStatement preparedStatement =
+                     cn.prepareStatement("select * from items where items.name = ?")) {
             preparedStatement.setString(1, key);
             try (ResultSet set = preparedStatement.executeQuery()) {
                 while (set.next()) {
                     list.add(getItem(set));
                 }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return list;
     }
 
     @Override
-    public Item findById(int id) throws SQLException {
+    public Item findById(int id) {
         Item item = null;
-        try (PreparedStatement preparedStatement = cn.prepareStatement("select * from items where items.id = ?")) {
+        try (PreparedStatement preparedStatement =
+                     cn.prepareStatement("select * from items where items.id = ?")) {
             preparedStatement.setInt(1, id);
             try (ResultSet set = preparedStatement.executeQuery()) {
                 if (set.next()) {
                     item = getItem(set);
                 }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return item;
     }
