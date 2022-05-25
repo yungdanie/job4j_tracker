@@ -61,6 +61,9 @@ public class SqlTrackerTest {
     public void whenSaveItemAndFindByName() {
         SqlTracker tracker = new SqlTracker(connection);
         Item item = tracker.add(new Item("item"));
+        tracker.add(new Item("item2"));
+        tracker.add(new Item("item3"));
+        tracker.add(new Item("item4"));
         assertThat(tracker.findByName("item").get(0), is(item));
     }
 
