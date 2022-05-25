@@ -78,7 +78,12 @@ public class SqlTrackerTest {
         Item item = tracker.add(new Item("item"));
         Item item1 = tracker.add(new Item("item1"));
         Item item2 = tracker.add(new Item("item2"));
-        assertThat(tracker.findAll(), is(List.of(item, item1, item2)));
+        Item item3 = tracker.add(new Item("item3"));
+        Item item4 = tracker.add(new Item("item4"));
+        Item item5 = tracker.add(new Item("item5"));
+        Item item6 = tracker.add(new Item("item6"));
+        Item item7 = tracker.add(new Item("item7"));
+        assertThat(tracker.findAll(), is(List.of(item, item1, item2, item3, item4, item5, item6, item7)));
     }
 
     @Test
