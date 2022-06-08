@@ -14,6 +14,10 @@ public class Item {
     public Item() {
     }
 
+    public Item(int id) {
+        this.id = id;
+    }
+
     public Item(String name) {
         this.name = name;
     }
@@ -34,7 +38,9 @@ public class Item {
     }
 
     public void setDataTime(Timestamp timestamp) {
-        created = timestamp.toLocalDateTime();
+        if (timestamp != null) {
+            created = timestamp.toLocalDateTime();
+        }
     }
 
     public int getId() {
