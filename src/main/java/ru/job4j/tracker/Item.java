@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 public class Item {
     private int id;
     private String name;
-    private LocalDateTime dataTime = LocalDateTime.now();
+    private LocalDateTime created = LocalDateTime.now();
+    private String dataTime = created.format(FORMATTER);
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 }
