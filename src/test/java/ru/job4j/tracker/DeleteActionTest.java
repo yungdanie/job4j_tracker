@@ -13,7 +13,7 @@ public class DeleteActionTest {
     public void whenDeleteAction() {
         Output output = new StubOutput();
         MemTracker memTracker = new MemTracker();
-        memTracker.add(new Item("New item", 1));
+        memTracker.add(new Item(1, "New item"));
         DeleteAction deleteAction = new DeleteAction(output);
         Input input = mock(Input.class);
         when(input.askInt(any(String.class))).thenReturn(1);

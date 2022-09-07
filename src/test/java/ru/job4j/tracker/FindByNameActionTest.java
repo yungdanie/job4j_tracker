@@ -14,7 +14,7 @@ public class FindByNameActionTest {
     public void findByNameTest() {
         Output output = new StubOutput();
         MemTracker memTracker = new MemTracker();
-        Item item = new Item("New item", 1);
+        Item item = new Item(1, "New item");
         memTracker.add(item);
         FindByNameAction findByNameAction = new FindByNameAction(output);
         Input input = mock(Input.class);

@@ -13,7 +13,7 @@ public class FindByIdActionTest {
     public void findByIdTest() {
         Output output = new StubOutput();
         MemTracker memTracker = new MemTracker();
-        Item item = new Item("New item", 1);
+        Item item = new Item(1, "New item");
         memTracker.add(item);
         FindByIdAction findByIdAction = new FindByIdAction(output);
         Input input = mock(Input.class);
