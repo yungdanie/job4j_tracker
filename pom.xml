@@ -29,6 +29,7 @@
             </activation>
         </profile>
 
+        <!--
         <profile>
             <id>production</id>
             <properties>
@@ -38,6 +39,7 @@
                 <db.driver>org.postgresql.Driver</db.driver>
             </properties>
         </profile>
+        -->
     </profiles>
 
     <dependencies>
