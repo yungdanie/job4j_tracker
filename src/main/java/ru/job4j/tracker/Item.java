@@ -9,16 +9,13 @@ import java.time.format.DateTimeFormatter;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
 @ToString
 public class Item {
     @EqualsAndHashCode.Include
-    @NonNull
     @Getter
     @Setter
     private int id;
 
-    @NonNull
     @Getter
     @Setter
     private String name;
@@ -36,5 +33,10 @@ public class Item {
 
     public Item(@NonNull int id) {
         this.id = id;
+    }
+
+    public Item(int id, String name) {
+        this.id = id;
+        this.name = name;
     }
 }
