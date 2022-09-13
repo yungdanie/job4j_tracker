@@ -17,12 +17,16 @@ public class Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
 
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "create_time")
     private LocalDateTime created = LocalDateTime.now();
 
+    @Transient
     private String dataTime = created.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
     public Item(@NonNull String name) {
