@@ -17,14 +17,15 @@ public class HbmTracker implements Store, AutoCloseable {
 
     @Override
     public Item add(Item item) {
-        try (Session session = sf.openSession()) {
-            try {
-                session.beginTransaction();
-                session.save(item);
-                session.getTransaction().commit();
-            } catch (Exception e) {
-                session.getTransaction().rollback();
-            }
+        Session session = sf.openSession();
+        try {
+            session.beginTransaction();
+            session.save(item);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
         return item;
     }
@@ -32,17 +33,18 @@ public class HbmTracker implements Store, AutoCloseable {
     @Override
     public boolean replace(int id, Item item) {
         int res = 0;
-        try (Session session = sf.openSession()) {
-            try {
-                session.beginTransaction();
-                res = session.createQuery("update Item set name = :fName, created = :fCreated")
-                        .setParameter("fName", item.getName())
-                        .setParameter("fCreated", item.getCreated())
-                        .executeUpdate();
-                session.getTransaction().commit();
-            } catch (Exception e) {
-                session.getTransaction().rollback();
-            }
+        Session session = sf.openSession();
+        try {
+            session.beginTransaction();
+            res = session.createQuery("update Item set name = :fName, created = :fCreated")
+                    .setParameter("fName", item.getName())
+                    .setParameter("fCreated", item.getCreated())
+                    .executeUpdate();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
         return res > 0;
     }
@@ -50,16 +52,17 @@ public class HbmTracker implements Store, AutoCloseable {
     @Override
     public boolean delete(int id) {
         int res = 0;
-        try (Session session = sf.openSession()) {
-            try {
-                session.beginTransaction();
-                res = session.createQuery("delete Item where id = :fId")
-                        .setParameter("fId", id)
-                        .executeUpdate();
-                session.getTransaction().commit();
-            } catch (Exception e) {
-                session.getTransaction().rollback();
-            }
+        Session session = sf.openSession();
+        try {
+            session.beginTransaction();
+            res = session.createQuery("delete Item where id = :fId")
+                    .setParameter("fId", id)
+                    .executeUpdate();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
         return res > 0;
     }
@@ -67,14 +70,15 @@ public class HbmTracker implements Store, AutoCloseable {
     @Override
     public List<Item> findAll() {
         List<Item> list = new ArrayList<>();
-        try (Session session = sf.openSession()) {
-            try {
-                session.beginTransaction();
-                list = session.createQuery("from Item", Item.class).list();
-                session.getTransaction().commit();
-            } catch (Exception e) {
-                session.getTransaction().rollback();
-            }
+        Session session = sf.openSession();
+        try {
+            session.beginTransaction();
+            list = session.createQuery("from Item", Item.class).list();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
         return list;
     }
@@ -82,15 +86,16 @@ public class HbmTracker implements Store, AutoCloseable {
     @Override
     public List<Item> findByName(String key) {
         List<Item> list = new ArrayList<>();
-        try (Session session = sf.openSession()) {
-            try {
-                session.beginTransaction();
-                list = session.createQuery("from Item where name = :fName", Item.class)
-                        .setParameter("fName", key).list();
-                session.getTransaction().commit();
-            } catch (Exception e) {
-                session.getTransaction().rollback();
-            }
+        Session session = sf.openSession();
+        try {
+            session.beginTransaction();
+            list = session.createQuery("from Item where name = :fName", Item.class)
+                    .setParameter("fName", key).list();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
         return list;
     }
@@ -98,15 +103,16 @@ public class HbmTracker implements Store, AutoCloseable {
     @Override
     public Item findById(int id) {
         Item item = null;
-        try (Session session = sf.openSession()) {
-            try {
-                session.beginTransaction();
-                item = session.createQuery("from Item where id = :fId", Item.class)
-                        .setParameter("fId", id).getSingleResult();
-                session.getTransaction().commit();
-            } catch (Exception e) {
+        Session session = sf.openSession();
+        try {
+            session.beginTransaction();
+            item = session.createQuery("from Item where id = :fId", Item.class)
+                    .setParameter("fId", id).getSingleResult();
+            session.getTransaction().commit();
+        } catch (Exception e) {
                 session.getTransaction().rollback();
-            }
+        } finally {
+            session.close();
         }
         return item;
     }
