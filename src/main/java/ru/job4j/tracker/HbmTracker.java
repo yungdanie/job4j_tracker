@@ -10,14 +10,24 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import java.util.List;
 
 public class HbmTracker implements Store, AutoCloseable {
-    private final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-            .configure().build();
-    private final SessionFactory sf = new MetadataSources(registry)
-            .buildMetadata().buildSessionFactory();
+    private final StandardServiceRegistry registry;
+    private final SessionFactory sessionFactory;
+
+    public HbmTracker(SessionFactory sf, StandardServiceRegistry registry) {
+        this.sessionFactory = sf;
+        this.registry = registry;
+    }
+
+    public HbmTracker() {
+        this.registry = new StandardServiceRegistryBuilder()
+                .configure().build();
+        this.sessionFactory = new MetadataSources(registry)
+                .buildMetadata().buildSessionFactory();
+    }
 
     @Override
     public Item add(Item item) {
-        Session session = sf.openSession();
+        Session session = sessionFactory.openSession();
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
@@ -37,7 +47,7 @@ public class HbmTracker implements Store, AutoCloseable {
     @Override
     public boolean replace(int id, Item item) {
         int res;
-        Session session = sf.openSession();
+        Session session = sessionFactory.openSession();
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
@@ -61,7 +71,7 @@ public class HbmTracker implements Store, AutoCloseable {
     @Override
     public boolean delete(int id) {
         int res;
-        Session session = sf.openSession();
+        Session session = sessionFactory.openSession();
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
@@ -83,7 +93,7 @@ public class HbmTracker implements Store, AutoCloseable {
     @Override
     public List<Item> findAll() {
         List<Item> list;
-        Session session = sf.openSession();
+        Session session = sessionFactory.openSession();
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
@@ -103,7 +113,7 @@ public class HbmTracker implements Store, AutoCloseable {
     @Override
     public List<Item> findByName(String key) {
         List<Item> list;
-        Session session = sf.openSession();
+        Session session = sessionFactory.openSession();
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
@@ -124,7 +134,7 @@ public class HbmTracker implements Store, AutoCloseable {
     @Override
     public Item findById(int id) {
         Item item;
-        Session session = sf.openSession();
+        Session session = sessionFactory.openSession();
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
