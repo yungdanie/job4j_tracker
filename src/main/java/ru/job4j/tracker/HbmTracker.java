@@ -21,7 +21,7 @@ public class HbmTracker implements Store, AutoCloseable {
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
-            session.save(item);
+            session.persist(item);
             tx.commit();
         } catch (Exception e) {
             if (tx != null) {
@@ -41,9 +41,10 @@ public class HbmTracker implements Store, AutoCloseable {
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
-            res = session.createQuery("update Item set name = :fName, created = :fCreated")
+            res = session.createQuery("update Item set name = :fName, created = :fCreated where id = :fId")
                     .setParameter("fName", item.getName())
                     .setParameter("fCreated", item.getCreated())
+                    .setParameter("fId", id)
                     .executeUpdate();
             tx.commit();
         } catch (Exception e) {
